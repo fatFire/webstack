@@ -13,10 +13,8 @@ class HomePage extends Page{
   }
 
   init() {
-    console.log(this.type + 'init')
     const click = document.querySelector(`.${this.type}click`)
     click && click.addEventListener(`click`, () => {
-      console.log(1)
       this.eventEmitter.emit(`${this.type}click`)
     })
     const back = document.querySelector(`.${this.type}back`)
@@ -28,20 +26,6 @@ class HomePage extends Page{
   render() {
     return ( `
       <style>
-        @font-face {
-          font-family: 'pingFangSC-Medium';
-          src: url('./assets/苹方黑体-准-简.ttf');
-          font-weight: normal;
-          font-style: normal;
-        }
-        html,body{
-          height: 100%;
-          font-family: 'pingFangSC-Medium', sans-serif;
-        }
-        body {
-          margin: 0;
-          padding: 0;
-        }
         .home {
           position: absolute;
           background-color: rgb(237, 237, 237);
@@ -153,16 +137,13 @@ class GroupPage extends Page{
   }
 
   init() {
-    console.log(this.type + 'init')
     const click = document.querySelector(`.${this.type}click`)
     click && click.addEventListener(`click`, () => {
       
       this.eventEmitter.emit(`${this.type}click`)
     })
     const back = document.querySelector(`.${this.type}back`)
-    console.dir(back)
     back && back.addEventListener('click', () => {
-      console.log('grouppage back click')
       this.eventEmitter.emit(`${this.type}back`)
     })
   }
@@ -265,9 +246,7 @@ class DetailPage extends Page{
       this.eventEmitter.emit(`${this.type}click`)
     })
     const back = document.querySelector(`.${this.type}back`)
-    console.dir(back)
     back && back.addEventListener('click', () => {
-      console.log('detailpage back click');
       this.eventEmitter.emit(`${this.type}back`)
     })
   }
@@ -366,7 +345,6 @@ class WebStack {
     homePage.init()
     this.stack = [homePage]
     this.eventRegist(pages)
-    console.log(this.eventEmitter.listener)
   }
   eventRegist(pages) {
     pages.forEach((page) => {
@@ -389,7 +367,6 @@ class WebStack {
       })
       this.eventEmitter.on(`${page.type}back`, () => {
         this.stack.pop()
-        console.log(1)
         this.wrap.lastElementChild.animate([
           {
             left: 0
@@ -402,7 +379,6 @@ class WebStack {
           fill: "forwards"
         })
         setTimeout(() => {
-          console.log(this)
           const backPage = this.stack[this.stack.length - 1]
           this.wrap.removeChild(this.wrap.lastElementChild)
           this.wrap.removeChild(this.wrap.lastElementChild)
