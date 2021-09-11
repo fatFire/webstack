@@ -74,6 +74,7 @@ class HomePage extends Page{
           right: 10px;
           top: 50%;
           transform: translateY(-50%);
+          width: 20px;
         }
         .content {
           border-top: 1px solid rgb(213, 213, 213);
