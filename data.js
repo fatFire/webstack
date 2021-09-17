@@ -1,0 +1,61 @@
+export const friends = [{
+  "nickname": "ccahan0",
+  "avatar": "https://robohash.org/laudantiumipsumiste.png?size=30x30&set=set1"
+}, {
+  "nickname": "pshalloe1",
+  "avatar": "https://robohash.org/dictaearumqui.png?size=30x30&set=set1"
+}, {
+  "nickname": "ceastcott2",
+  "avatar": "https://robohash.org/maioresatdelectus.png?size=30x30&set=set1"
+}, {
+  "nickname": "chedgecock3",
+  "avatar": "https://robohash.org/fugiatsapientequi.png?size=30x30&set=set1"
+}, {
+  "nickname": "trisdale4",
+  "avatar": "https://robohash.org/accusantiumnihildicta.png?size=30x30&set=set1"
+}, {
+  "nickname": "tgoss5",
+  "avatar": "https://robohash.org/perspiciatisliberodolores.png?size=30x30&set=set1"
+}, {
+  "nickname": "jskowcraft6",
+  "avatar": "https://robohash.org/quiadoloresuscipit.png?size=30x30&set=set1"
+}, {
+  "nickname": "kgrewcock7",
+  "avatar": "https://robohash.org/recusandaequiasperiores.png?size=30x30&set=set1"
+}, {
+  "nickname": "jpestell8",
+  "avatar": "https://robohash.org/autemquicum.png?size=30x30&set=set1"
+}, {
+  "nickname": "omellodey9",
+  "avatar": "https://robohash.org/undenoneaque.png?size=30x30&set=set1"
+}, {
+  "nickname": "awincklesa",
+  "avatar": "https://robohash.org/rationeexplicabocorporis.png?size=30x30&set=set1"
+}, {
+  "nickname": "rhadwinb",
+  "avatar": "https://robohash.org/quaeratadipsam.png?size=30x30&set=set1"
+}, {
+  "nickname": "dbewc",
+  "avatar": "https://robohash.org/doloremculpareiciendis.png?size=30x30&set=set1"
+}, {
+  "nickname": "tmckayd",
+  "avatar": "https://robohash.org/quisetnulla.png?size=30x30&set=set1"
+}, {
+  "nickname": "canthoine",
+  "avatar": "https://robohash.org/dolorsedillo.png?size=30x30&set=set1"
+}, {
+  "nickname": "aadshedef",
+  "avatar": "https://robohash.org/repellatsitvoluptas.png?size=30x30&set=set1"
+}, {
+  "nickname": "cschoolfieldg",
+  "avatar": "https://robohash.org/estpossimusquis.png?size=30x30&set=set1"
+}, {
+  "nickname": "fcaughteh",
+  "avatar": "https://robohash.org/liberosolutacum.png?size=30x30&set=set1"
+}, {
+  "nickname": "bthorbyi",
+  "avatar": "https://robohash.org/similiquemaximedebitis.png?size=30x30&set=set1"
+}, {
+  "nickname": "nyearnesj",
+  "avatar": "https://robohash.org/arecusandaevero.png?size=30x30&set=set1"
+}]

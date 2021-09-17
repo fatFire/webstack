@@ -25,7 +25,9 @@
 
 .icon-weixin:before {
   content: "\e5b6";
+  display: block;
   font-size: 24px;
+  margin-bottom: 3px;
 }
 
 .icon-weixin-fill:before {
