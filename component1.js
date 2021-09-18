@@ -1,6 +1,8 @@
 import { friends } from "./data.js"
 class Page {
   componentDidMount() {}
+
+  render() {}
 }
 
 class HomePage extends Page {
@@ -172,11 +174,11 @@ class ContactPage extends Page {
   }
 
   onScroll() {
-    const headBorder = document.querySelector('.contact-head-border')
-    const content = document.querySelector('.contact-content')
-    content.addEventListener('scroll', (e) => {
+    const headBorder = document.querySelector(".contact-head-border")
+    const content = document.querySelector(".contact-content")
+    content.addEventListener("scroll", (e) => {
       headBorder.style.opacity = 1
-      if(e.target.scrollTop == 0) {
+      if (e.target.scrollTop == 0) {
         headBorder.style.opacity = 0
       }
     })
@@ -521,16 +523,24 @@ class WebStack {
     this.webstack.push(initPageDom)
     const tabItem = initPageDom.querySelectorAll(".tab-item")
     if (page instanceof HomePage) {
-      tabItem[0].querySelector('.icon-pinglun').classList.replace('icon-pinglun', 'icon-pinglun-fill')
+      tabItem[0]
+        .querySelector(".icon-pinglun")
+        .classList.replace("icon-pinglun", "icon-pinglun-fill")
       tabItem[0].classList.add("active")
     } else if (page instanceof ContactPage) {
-      tabItem[1].querySelector('.icon-user-group').classList.replace('icon-user-group', 'icon-user-group-fill')
+      tabItem[1]
+        .querySelector(".icon-user-group")
+        .classList.replace("icon-user-group", "icon-user-group-fill")
       tabItem[1].classList.add("active")
     } else if (page instanceof FindPage) {
-      tabItem[2].querySelector('.icon-faxian1').classList.replace('icon-faxian1', 'icon-faxian1-fill')
+      tabItem[2]
+        .querySelector(".icon-faxian1")
+        .classList.replace("icon-faxian1", "icon-faxian1-fill")
       tabItem[2].classList.add("active")
     } else {
-      tabItem[3].querySelector('.icon-user').classList.replace('icon-user', 'icon-user-fill')
+      tabItem[3]
+        .querySelector(".icon-user")
+        .classList.replace("icon-user", "icon-user-fill")
       tabItem[3].classList.add("active")
     }
   }
