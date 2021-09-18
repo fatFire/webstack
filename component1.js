@@ -158,7 +158,7 @@ class DetailPage extends Page {
           <span >朋友圈</span>
           <span class="iconfont icon-jinru"></span>
         </div>
-        <div class="contact">
+        <div class="detail-contact">
           <span class="iconfont icon-comment"></span>
           <span>发消息</span>
         </div>
@@ -557,7 +557,6 @@ class WebStack {
   back() {
     const curPageDom = this.webstack.pop()
     const nextPageDom = this.webstack[this.webstack.length - 1]
-    console.log(curPageDom)
     const animation = this.addAnimation(curPageDom, nextPageDom, false)
     // curPageDom.addEventListener('animationend', () => {
     //   this.wrap.removeChild(curPageDom)
