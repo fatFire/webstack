@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./assets/font/iconfont1/iconfont.css" />
     <link
       rel="stylesheet"
-      href="//at.alicdn.com/t/font_2814820_0duj1hsg7frt.css"
+      href="//at.alicdn.com/t/font_2814820_yy9py70gnhk.css"
     />
 
     <style>
@@ -25,11 +25,13 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        display: flex;
+        flex-direction: column;
       }
       #wrap {
-        height: 100%;
         position: relative;
         overflow: hidden;
+        flex: 1;
       }
 
       .home {
@@ -59,12 +61,13 @@
         text-align: center;
         position: relative;
       }
-      .home-head img {
+      .home-head div {
         position: absolute;
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
         width: 20px;
+        font-size: 22px;
       }
       .home-search {
         position: relative;
@@ -193,7 +196,7 @@
         color: rgb(87, 190, 106);
       }
 
-      .group-head {
+      .chat-head {
         margin: 30px 0 10px;
         display: flex;
         justify-content: space-between;
@@ -653,6 +656,26 @@
   </head>
   <body>
     <div id="wrap"></div>
-    <script type="module" src="./component1.js"></script>
+    <div class="tab">
+      <div class="tab-item">
+        <span class="iconfont icon-pinglun"></span>
+        <div>微信</div>
+      </div>
+      <div class="tab-item">
+        <span class="iconfont icon-user-group"></span>
+        <div>通讯录</div>
+      </div>
+      <div class="tab-item">
+        <span class="iconfont icon-faxian1">
+          <i class="iconfont icon-yuandian"></i>
+        </span>
+        <div>发现</div>
+      </div>
+      <div class="tab-item">
+        <span class="iconfont icon-user"></span>
+        <div>我</div>
+      </div>
+    </div>
+    <script type="module" src="./component2.js"></script>
   </body>
 </html>

@@ -3,8 +3,8 @@ import { friends } from "./data.js"
 class Page {
   constructor(props) {
     this.props = props
-    this.hasChildren = false
-    this.domString = this.render()
+    this.state = null
+    this.dom = this.stringToDom(this.render())
     this.compile()
     this.componentDidMount()
   }
@@ -14,64 +14,84 @@ class Page {
   render() {}
 
   compile() {}
+
+  setState(state) {
+    this.state = state
+  }
+
+  stringToDom(domString) {
+    const domParser = new DOMParser()
+    return domParser.parseFromString(domString, "text/html").body
+      .firstElementChild
+  }
 }
 
 class Title extends Page {
-
   constructor(props) {
     super(props)
   }
 
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom, this.props.pos)
+    } else {
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
+    }
+  }
+
   render() {
-    if(this.props.title == '微信') {
-      return `
-      <div class="home-head">
-        ${this.props.title}
-        <img src="./assets/add.svg">
-      </div>
-      ` 
-    }
-    if (this.props.title == '胖火花') {
-      return `
-      <div class="group-head">
-        <div class="chatpageback iconfont icon-fanhui"></div>
-        <div>${this.props.title}</div>
-        <div class="iconfont icon-gengduo"></div>
-      </div>
-      `
-    }
+    const title = this.props.title ? this.props.title : ""
+    const back = this.props.back
+      ? `<div class="${this.props.id}pageback iconfont icon-fanhui"></div>`
+      : ""
+    const slot = this.props.icon
+      ? `<div class="iconfont ${this.props.icon}"></div>`
+      : ""
+
+    return `
+        <div class="${this.props.id}-head">
+          ${back}
+          ${title}
+          ${slot}
+        </div>
+    `
   }
 }
 
 class HomePage extends Page {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
   }
   componentDidMount() {
     this.go()
-    this.tabChange()
+    // this.tabChange()
   }
-  compile(node) {
-    if (this.child) {
-      new this.child()
-    }
-    if (node) {
-      node.innerHTML = this.domString
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
     } else {
-      const wrap = document.querySelector('#wrap')
-      wrap.appendChild(stringToDom(this.domString))
+      new Title({
+        title: this.props.title,
+        id: "home",
+        icon: "icon-add",
+        back: false,
+        node: this,
+        selector: ".home",
+      })
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
     }
   }
-  innerHTML(string) {
-    let str = this.render()
-    str.replace('childComponent', string)
-    this.stringDom = str
+  innerHTML(selector, dom, pos = "afterbegin") {
+    const wrap = this.dom.querySelector(selector) || this.dom
+    wrap.insertAdjacentElement(pos, dom)
   }
-  
+
   go() {
     const go = document.querySelector(".homepagego")
     go.addEventListener("click", () => {
-      webstack.go(new ChatPage())
+      webstack.go("/chat", { title: "胖火花", message: ["hello world"] })
     })
   }
   tabChange() {
@@ -92,10 +112,8 @@ class HomePage extends Page {
   }
 
   render() {
-    this.child = Title
     return `
       <div class="home">
-        childComponent
         <div class="content">
           <div class="home-search">
             <input type="text" />
@@ -113,86 +131,137 @@ class HomePage extends Page {
             </div>
           </div>
         </div>
-        <div class="tab">
-          <div class="tab-item">
-            <span class="iconfont icon-pinglun"></span>
-            <div>微信</div>
-          </div>
-          <div class="tab-item">
-            <span class="iconfont icon-user-group"></span>
-            <div>通讯录</div>
-          </div>
-          <div class="tab-item">
-            <span class="iconfont icon-faxian1">
-              <i class="iconfont icon-yuandian"></i>
-            </span>
-            <div>发现</div>
-          </div>
-          <div class="tab-item">
-            <span class="iconfont icon-user"></span>
-            <div>我</div>
-          </div>
-        </div>
       </div>
       `
   }
 }
 
 class ChatPage extends Page {
+  constructor(props) {
+    super(props)
+    this.state = { message: this.props.message }
+  }
+
   componentDidMount() {
     this.go()
     this.back()
+    this.input()
   }
 
   go() {
     const go = document.querySelector(".chatpagego")
     go.addEventListener("click", () => {
-      webstack.go(new DetailPage())
+      webstack.go("/detail")
     })
   }
-
   back() {
     const back = document.querySelector(".chatpageback")
     back.addEventListener("click", () => {
       webstack.back()
+      setTimeout(() => {
+        const wrap = document.querySelector("#wrap")
+        wrap.removeChild(this.dom)
+      }, 200)
     })
   }
 
-  compile(node) {
-    if (this.child) {
-      new this.child()
-    }
-    if (node) {
-      node.innerHTML = this.domString
+  input() {
+    const input = document.querySelector(".cheat-input")
+    input.addEventListener("keydown", (e) => {
+      if (e.code === "Enter") {
+        this.setState({
+          message: [...this.state.message, input.value],
+        })
+        input.value = ""
+      }
+    })
+  }
+
+  setState(state) {
+    this.state = state
+    this.recompile()
+  }
+
+  recompile() {
+    const item = this.state?.message[this.state?.message.length - 1]
+    new Message({
+      message: item,
+      node: this,
+      selector: ".group-content",
+      pos: "beforeend",
+    })
+    const wrap = document.querySelector("#wrap")
+    wrap.replaceChild(this.dom, document.querySelector(".group"))
+  }
+
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
     } else {
-      const wrap = document.querySelector('#wrap')
-      wrap.appendChild(stringToDom(this.domString))
+      new Title({
+        title: this.props.title,
+        back: true,
+        id: "chat",
+        icon: "icon-gengduo",
+        node: this,
+        selector: ".group",
+      })
+      new Message({
+        message: this.props.message,
+        node: this,
+        selector: ".group-content",
+        pos: "beforeend",
+      })
+
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
     }
   }
-  innerHTML(string) {
-    let str = this.render()
-    str.replace('childComponent', string)
-    this.stringDom = str
+  innerHTML(selector, dom, pos = "afterbegin") {
+    const wrap = this.dom.querySelector(selector) || this.dom
+    wrap.insertAdjacentElement(pos, dom)
   }
 
   render() {
-    this.child = Title
     return `
       <div class="group">
-        childComponent
         <div class="group-content">
-          <div class="message">
-            <img src="./assets/avatar.jpg" class="message-avatar chatpagego">
-            <div class="message-words iconfont icon-zuosanjiao1">hello world</div>
-          </div>
         </div>
         <div class="input">
           <div class="iconfont icon-yuyin"></div>
-          <input>
+          <input type="text" class="cheat-input">
           <div class="iconfont icon-xiaolian"></div>
           <div class="iconfont icon-jiahao"></div>
         </div>
       </div>
+    `
+  }
+}
+
+class Message extends Page {
+  constructor(props) {
+    super(props)
+  }
+
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom, this.props.pos)
+    } else {
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
+    }
+  }
+  innerHTML(selector, dom) {
+    const wrap = this.dom.querySelector(selector) || this.dom
+    wrap.insertAdjacentElement("afterbegin", dom)
+  }
+
+  render() {
+    return `
+    <div class="message">
+      <img src="./assets/avatar.jpg" class="message-avatar chatpagego">
+      <div class="message-words iconfont icon-zuosanjiao1">${this.props.message}</div>
+    </div>
     `
   }
 }
@@ -203,36 +272,40 @@ class DetailPage extends Page {
   }
 
   back() {
-    const click = document.querySelector(".detailpageback")
-    click.addEventListener("click", () => {
+    const back = document.querySelector(".informationpageback")
+    back.addEventListener("click", () => {
       webstack.back()
+      setTimeout(() => {
+        const wrap = document.querySelector("#wrap")
+        wrap.removeChild(this.dom)
+      }, 200)
     })
   }
 
-  compile(node) {
-    if (this.child) {
-      new this.child()
-    }
-    if (node) {
-      node.innerHTML = this.domString
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
     } else {
-      const wrap = document.querySelector('#wrap')
-      wrap.appendChild(stringToDom(this.domString))
+      new Title({
+        title: this.props.title,
+        back: true,
+        id: "information",
+        node: this,
+        selector: ".information",
+      })
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
     }
   }
-  innerHTML(string) {
-    let str = this.render()
-    str.replace('childComponent', string)
-    this.stringDom = str
+  innerHTML(selector, dom, pos = "afterbegin") {
+    const wrap = this.dom.querySelector(selector) || this.dom
+    wrap.insertAdjacentElement(pos, dom)
   }
 
   render() {
-    this.child = Title
     return `
       <div class="information">
-        <div class="information-head">
-          <div class="detailpageback iconfont icon-fanhui"></div>
-        </div>
+        
         <div class="introduction">
           <img src="./assets/avatar.jpg">
           <div class="introduction-self">
@@ -256,7 +329,7 @@ class DetailPage extends Page {
 
 class ContactPage extends Page {
   componentDidMount() {
-    this.tabChange()
+    // this.tabChange()
     this.onScroll()
   }
 
@@ -271,22 +344,22 @@ class ContactPage extends Page {
     })
   }
 
-  tabChange() {
-    const tabItems = document.querySelectorAll(".tab-item")
-    tabItems.forEach((item, index) => {
-      item.addEventListener("click", () => {
-        if (index === 0) {
-          webstack.init(new HomePage())
-        } else if (index === 1) {
-          webstack.init(new ContactPage())
-        } else if (index === 2) {
-          webstack.init(new FindPage())
-        } else {
-          webstack.init(new MyPage())
-        }
-      })
-    })
-  }
+  // tabChange() {
+  //   const tabItems = document.querySelectorAll(".tab-item")
+  //   tabItems.forEach((item, index) => {
+  //     item.addEventListener("click", () => {
+  //       if (index === 0) {
+  //         webstack.init(new HomePage())
+  //       } else if (index === 1) {
+  //         webstack.init(new ContactPage())
+  //       } else if (index === 2) {
+  //         webstack.init(new FindPage())
+  //       } else {
+  //         webstack.init(new MyPage())
+  //       }
+  //     })
+  //   })
+  // }
 
   getList(title, items) {
     let s = ""
@@ -371,27 +444,6 @@ class ContactPage extends Page {
           <div>D</div>
         </div>
       </div>
-      
-      <div class="tab">
-        <div class="tab-item">
-          <span class="iconfont icon-pinglun"></span>
-          <div>微信</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user-group"></span>
-          <div>通讯录</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-faxian1">
-            <i class="iconfont icon-yuandian"></i>
-          </span>
-          <div>发现</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user"></span>
-          <div>我</div>
-        </div>
-      </div>
     </div>
     `
   }
@@ -399,7 +451,7 @@ class ContactPage extends Page {
 
 class FindPage extends Page {
   componentDidMount() {
-    this.tabChange()
+    // this.tabChange()
   }
 
   tabChange() {
@@ -456,26 +508,6 @@ class FindPage extends Page {
           </i>
         </div>
       </div>
-      <div class="tab">
-        <div class="tab-item">
-          <span class="iconfont icon-pinglun"></span>
-          <div>微信</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user-group"></span>
-          <div>通讯录</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-faxian1">
-            <i class="iconfont icon-yuandian"></i>
-          </span>
-          <div>发现</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user"></span>
-          <div>我</div>
-        </div>
-      </div>
     </div>
     `
   }
@@ -483,7 +515,7 @@ class FindPage extends Page {
 
 class MyPage extends Page {
   componentDidMount() {
-    this.tabChange()
+    // this.tabChange()
   }
 
   tabChange() {
@@ -571,26 +603,6 @@ class MyPage extends Page {
           </div>
         </div>
       </div>
-      <div class="tab">
-        <div class="tab-item">
-          <span class="iconfont icon-pinglun"></span>
-          <div>微信</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user-group"></span>
-          <div>通讯录</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-faxian1">
-            <i class="iconfont icon-yuandian"></i>
-          </span>
-          <div>发现</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user"></span>
-          <div>我</div>
-        </div>
-      </div>
     </div>
     `
   }
@@ -598,62 +610,64 @@ class MyPage extends Page {
 
 class WebStack {
   constructor() {
-    this.webstack = []
-    this.wrap = document.querySelector("#wrap")
+    this.stack = []
   }
 
-  init(page) {
-    this.webstack = []
-    const initPageDom = stringToDom(page.render())
-    this.wrap.replaceChildren(initPageDom)
-    page.componentDidMount()
-    this.webstack.push(initPageDom)
-    const tabItem = initPageDom.querySelectorAll(".tab-item")
-    if (page instanceof HomePage) {
-      tabItem[0]
-        .querySelector(".icon-pinglun")
-        .classList.replace("icon-pinglun", "icon-pinglun-fill")
-      tabItem[0].classList.add("active")
-    } else if (page instanceof ContactPage) {
-      tabItem[1]
-        .querySelector(".icon-user-group")
-        .classList.replace("icon-user-group", "icon-user-group-fill")
-      tabItem[1].classList.add("active")
-    } else if (page instanceof FindPage) {
-      tabItem[2]
-        .querySelector(".icon-faxian1")
-        .classList.replace("icon-faxian1", "icon-faxian1-fill")
-      tabItem[2].classList.add("active")
-    } else {
-      tabItem[3]
-        .querySelector(".icon-user")
-        .classList.replace("icon-user", "icon-user-fill")
-      tabItem[3].classList.add("active")
-    }
-  }
+  // init(page) {
+  //   this.webstack = []
+  //   const initPageDom = stringToDom(page.render())
+  //   this.wrap.replaceChildren(initPageDom)
+  //   page.componentDidMount()
+  //   this.webstack.push(initPageDom)
+  //   const tabItem = initPageDom.querySelectorAll(".tab-item")
+  //   if (page instanceof HomePage) {
+  //     tabItem[0]
+  //       .querySelector(".icon-pinglun")
+  //       .classList.replace("icon-pinglun", "icon-pinglun-fill")
+  //     tabItem[0].classList.add("active")
+  //   } else if (page instanceof ContactPage) {
+  //     tabItem[1]
+  //       .querySelector(".icon-user-group")
+  //       .classList.replace("icon-user-group", "icon-user-group-fill")
+  //     tabItem[1].classList.add("active")
+  //   } else if (page instanceof FindPage) {
+  //     tabItem[2]
+  //       .querySelector(".icon-faxian1")
+  //       .classList.replace("icon-faxian1", "icon-faxian1-fill")
+  //     tabItem[2].classList.add("active")
+  //   } else {
+  //     tabItem[3]
+  //       .querySelector(".icon-user")
+  //       .classList.replace("icon-user", "icon-user-fill")
+  //     tabItem[3].classList.add("active")
+  //   }
+  // }
 
-  go(nextPage) {
-    const nextPageDom = stringToDom(nextPage.render())
-    const curPageDom = this.webstack[this.webstack.length - 1]
-    this.wrap.appendChild(nextPageDom)
-    this.webstack.push(nextPageDom)
-    nextPage.componentDidMount()
+  go(url, props) {
+    const curPageDom =
+      this.stack.length > 0 ? this.stack[this.stack.length - 1].dom : undefined
+    const Page = routes[url].component
+    const pageInstance = new Page({ ...routes[url].props, ...props })
+    this.stack.push(pageInstance)
+    const nextPageDom = pageInstance.dom
     this.addAnimation(curPageDom, nextPageDom)
   }
 
   back() {
-    const curPageDom = this.webstack.pop()
-    const nextPageDom = this.webstack[this.webstack.length - 1]
+    const curPageDom = this.stack.pop().dom
+    const nextPageDom =
+      this.stack.length > 0 ? this.stack[this.stack.length - 1].dom : undefined
     const animation = this.addAnimation(curPageDom, nextPageDom, false)
-    // curPageDom.addEventListener('animationend', () => {
-    //   this.wrap.removeChild(curPageDom)
-    // })
     animation.onfinish = () => {
-      this.wrap.removeChild(curPageDom)
+      return true
     }
   }
 
   addAnimation(curPageDom, nextPageDom, isGo = true) {
+    if (this.stack.length == 2 && isGo) {
+      
+    }
+    if (!curPageDom || !nextPageDom) return
     let curPageAnimation
     if (isGo) {
       nextPageDom.animate(
@@ -718,11 +732,6 @@ class WebStack {
   }
 }
 
-function stringToDom(domString) {
-  const domParser = new DOMParser()
-  return domParser.parseFromString(domString, "text/html").body
-    .firstElementChild
-}
 class EventEmitter {
   constructor() {
     this.events = {}
@@ -761,5 +770,20 @@ const eventEmitter = new EventEmitter()
 // const groupPage = new GroupPage(eventEmitter, detailPage)
 // const homePage = new HomePage(eventEmitter, groupPage)
 
+const routes = {
+  "/home": {
+    component: HomePage,
+    props: {
+      title: "微信",
+    },
+  },
+  "/chat": {
+    component: ChatPage,
+  },
+  "/detail": {
+    component: DetailPage,
+  },
+}
+
 const webstack = new WebStack()
-webstack.init(new HomePage())
+webstack.go("/home")
