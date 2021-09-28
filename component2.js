@@ -2,7 +2,7 @@ import { friends } from "./data.js"
 
 class Page {
   constructor(props) {
-    this.props = props
+    this.props = props || {}
     this.state = null
     this.dom = this.stringToDom(this.render())
     this.compile()
@@ -17,6 +17,11 @@ class Page {
 
   setState(state) {
     this.state = state
+  }
+
+  componentUnmount() {
+    const wrap = document.querySelector("#wrap")
+    wrap.removeChild(this.dom)
   }
 
   stringToDom(domString) {
@@ -91,23 +96,7 @@ class HomePage extends Page {
   go() {
     const go = document.querySelector(".homepagego")
     go.addEventListener("click", () => {
-      webstack.go("/chat", { title: "胖火花", message: ["hello world"] })
-    })
-  }
-  tabChange() {
-    const tabItems = document.querySelectorAll(".tab-item")
-    tabItems.forEach((item, index) => {
-      item.addEventListener("click", () => {
-        if (index === 0) {
-          webstack.init(new HomePage())
-        } else if (index === 1) {
-          webstack.init(new ContactPage())
-        } else if (index === 2) {
-          webstack.init(new FindPage())
-        } else {
-          webstack.init(new MyPage())
-        }
-      })
+      router.go("/chat", { title: "胖火花", message: ["hello world"] })
     })
   }
 
@@ -151,17 +140,13 @@ class ChatPage extends Page {
   go() {
     const go = document.querySelector(".chatpagego")
     go.addEventListener("click", () => {
-      webstack.go("/detail")
+      router.go("/detail")
     })
   }
   back() {
     const back = document.querySelector(".chatpageback")
     back.addEventListener("click", () => {
-      webstack.back()
-      setTimeout(() => {
-        const wrap = document.querySelector("#wrap")
-        wrap.removeChild(this.dom)
-      }, 200)
+      router.back(this.props.preURL)
     })
   }
 
@@ -274,11 +259,7 @@ class DetailPage extends Page {
   back() {
     const back = document.querySelector(".informationpageback")
     back.addEventListener("click", () => {
-      webstack.back()
-      setTimeout(() => {
-        const wrap = document.querySelector("#wrap")
-        wrap.removeChild(this.dom)
-      }, 200)
+      router.back(this.props.preURL)
     })
   }
 
@@ -329,8 +310,16 @@ class DetailPage extends Page {
 
 class ContactPage extends Page {
   componentDidMount() {
-    // this.tabChange()
     this.onScroll()
+  }
+
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
+    } else {
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
+    }
   }
 
   onScroll() {
@@ -343,23 +332,6 @@ class ContactPage extends Page {
       }
     })
   }
-
-  // tabChange() {
-  //   const tabItems = document.querySelectorAll(".tab-item")
-  //   tabItems.forEach((item, index) => {
-  //     item.addEventListener("click", () => {
-  //       if (index === 0) {
-  //         webstack.init(new HomePage())
-  //       } else if (index === 1) {
-  //         webstack.init(new ContactPage())
-  //       } else if (index === 2) {
-  //         webstack.init(new FindPage())
-  //       } else {
-  //         webstack.init(new MyPage())
-  //       }
-  //     })
-  //   })
-  // }
 
   getList(title, items) {
     let s = ""
@@ -450,25 +422,13 @@ class ContactPage extends Page {
 }
 
 class FindPage extends Page {
-  componentDidMount() {
-    // this.tabChange()
-  }
-
-  tabChange() {
-    const tabItems = document.querySelectorAll(".tab-item")
-    tabItems.forEach((item, index) => {
-      item.addEventListener("click", () => {
-        if (index === 0) {
-          webstack.init(new HomePage())
-        } else if (index === 1) {
-          webstack.init(new ContactPage())
-        } else if (index === 2) {
-          webstack.init(new FindPage())
-        } else {
-          webstack.init(new MyPage())
-        }
-      })
-    })
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
+    } else {
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
+    }
   }
 
   render() {
@@ -514,25 +474,13 @@ class FindPage extends Page {
 }
 
 class MyPage extends Page {
-  componentDidMount() {
-    // this.tabChange()
-  }
-
-  tabChange() {
-    const tabItems = document.querySelectorAll(".tab-item")
-    tabItems.forEach((item, index) => {
-      item.addEventListener("click", () => {
-        if (index === 0) {
-          webstack.init(new HomePage())
-        } else if (index === 1) {
-          webstack.init(new ContactPage())
-        } else if (index === 2) {
-          webstack.init(new FindPage())
-        } else {
-          webstack.init(new MyPage())
-        }
-      })
-    })
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
+    } else {
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
+    }
   }
 
   render() {
@@ -608,64 +556,184 @@ class MyPage extends Page {
   }
 }
 
-class WebStack {
-  constructor() {
-    this.stack = []
+class TabPage extends Page {
+  constructor(props) {
+    super(props)
   }
 
-  // init(page) {
-  //   this.webstack = []
-  //   const initPageDom = stringToDom(page.render())
-  //   this.wrap.replaceChildren(initPageDom)
-  //   page.componentDidMount()
-  //   this.webstack.push(initPageDom)
-  //   const tabItem = initPageDom.querySelectorAll(".tab-item")
-  //   if (page instanceof HomePage) {
-  //     tabItem[0]
-  //       .querySelector(".icon-pinglun")
-  //       .classList.replace("icon-pinglun", "icon-pinglun-fill")
-  //     tabItem[0].classList.add("active")
-  //   } else if (page instanceof ContactPage) {
-  //     tabItem[1]
-  //       .querySelector(".icon-user-group")
-  //       .classList.replace("icon-user-group", "icon-user-group-fill")
-  //     tabItem[1].classList.add("active")
-  //   } else if (page instanceof FindPage) {
-  //     tabItem[2]
-  //       .querySelector(".icon-faxian1")
-  //       .classList.replace("icon-faxian1", "icon-faxian1-fill")
-  //     tabItem[2].classList.add("active")
-  //   } else {
-  //     tabItem[3]
-  //       .querySelector(".icon-user")
-  //       .classList.replace("icon-user", "icon-user-fill")
-  //     tabItem[3].classList.add("active")
-  //   }
-  // }
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
+    } else {
+      const body = document.querySelector("body")
+      const tabItem = this.dom.querySelector(".tab-item")
+      tabItem.classList.add("active")
+      body.appendChild(this.dom)
+    }
+  }
+
+  componentDidMount() {
+    this.tabChange()
+  }
+
+  tabChange() {
+    const tabItems = document.querySelectorAll(".tab-item")
+    tabItems.forEach((item, index) => {
+      item.addEventListener("click", () => {
+        if (index === 0) {
+          router.tabChange("/home")
+          const active = document.querySelector(".active")
+          active.classList.remove(active.classList[active.classList.length - 1])
+          item.classList.add("active")
+        } else if (index === 1) {
+          router.tabChange("/contact")
+          const active = document.querySelector(".active")
+          active.classList.remove(active.classList[active.classList.length - 1])
+          item.classList.add("active")
+        } else if (index === 2) {
+          router.tabChange("/find")
+          const active = document.querySelector(".active")
+          active.classList.remove(active.classList[active.classList.length - 1])
+          item.classList.add("active")
+        } else {
+          router.tabChange("/my")
+          const active = document.querySelector(".active")
+          active.classList.remove(active.classList[active.classList.length - 1])
+          item.classList.add("active")
+        }
+      })
+    })
+  }
+
+  render() {
+    return `
+    <div class="tab">
+      <div class="tab-item">
+        <span class="iconfont icon-pinglun"></span>
+        <div>微信</div>
+      </div>
+      <div class="tab-item">
+        <span class="iconfont icon-user-group"></span>
+        <div>通讯录</div>
+      </div>
+      <div class="tab-item">
+        <span class="iconfont icon-faxian1">
+          <i class="iconfont icon-yuandian"></i>
+        </span>
+        <div>发现</div>
+      </div>
+      <div class="tab-item">
+        <span class="iconfont icon-user"></span>
+        <div>我</div>
+      </div>
+    </div>
+    `
+  }
+}
+
+class Router {
+  constructor() {
+    this.stack = []
+    this.urlStack = []
+    window.addEventListener('popstate', (e) => {
+      // console.log(this.urlStack)
+      // console.log(e.state.url)
+      console.log(location.pathname)
+      if (location.pathname === '/') {
+        window.history.pushState(null, '', '/home')
+        return
+      }
+      if (!this.urlStack.find((ele) => ele === e.state?.url)) {
+        this.urlgo(e.state?.url, e.state?.props)
+      } else {
+        this.urlback()
+      }
+    })
+  }
 
   go(url, props) {
+    window.history.pushState({
+      url,
+      props
+    }, "", url) 
+    this.urlgo(url, props)
+  }
+
+  urlgo(url, props) {
+    const preURL = this.urlStack[this.urlStack.length - 1]
+    this.urlStack.push(url)
     const curPageDom =
       this.stack.length > 0 ? this.stack[this.stack.length - 1].dom : undefined
     const Page = routes[url].component
-    const pageInstance = new Page({ ...routes[url].props, ...props })
+    const pageInstance = new Page({ ...routes[url].props, ...props, preURL })
     this.stack.push(pageInstance)
     const nextPageDom = pageInstance.dom
     this.addAnimation(curPageDom, nextPageDom)
   }
 
-  back() {
-    const curPageDom = this.stack.pop().dom
+  back(preURL) {
+    window.history.pushState(null, '', preURL)
+    this.urlback()
+  }
+  urlback() {
+    this.urlStack.pop()
+    const currentPage = this.stack.pop()
+
+    const curPageDom = currentPage.dom
     const nextPageDom =
       this.stack.length > 0 ? this.stack[this.stack.length - 1].dom : undefined
     const animation = this.addAnimation(curPageDom, nextPageDom, false)
     animation.onfinish = () => {
-      return true
+      currentPage.componentUnmount()
     }
+  }
+
+  tabChange(url, props) {
+    while (this.stack.length > 0) {
+      const page = this.stack.pop()
+      page.componentUnmount()
+    }
+    this.go(url, props)
   }
 
   addAnimation(curPageDom, nextPageDom, isGo = true) {
     if (this.stack.length == 2 && isGo) {
-      
+      const tab = document.querySelector(".tab")
+      tab.classList.add("tab-hide")
+      tab.animate(
+        [
+          {
+            left: "0",
+          },
+          {
+            left: "-20%",
+          },
+        ],
+        {
+          duration: 200,
+          fill: "forwards",
+        }
+      )
+    }
+    if (this.stack.length == 1 && !isGo) {
+      const tab = document.querySelector(".tab")
+      const ani = tab.animate(
+        [
+          {
+            left: "-20%",
+          },
+          {
+            left: "0",
+          },
+        ],
+        {
+          duration: 200,
+          fill: "forwards",
+        }
+      )
+      ani.onfinish = () => {
+        tab.classList.remove("tab-hide")
+      }
     }
     if (!curPageDom || !nextPageDom) return
     let curPageAnimation
@@ -783,7 +851,17 @@ const routes = {
   "/detail": {
     component: DetailPage,
   },
+  "/contact": {
+    component: ContactPage,
+  },
+  "/find": {
+    component: FindPage,
+  },
+  "/my": {
+    component: MyPage,
+  },
 }
 
-const webstack = new WebStack()
-webstack.go("/home")
+const router = new Router()
+router.go("/home")
+new TabPage()
