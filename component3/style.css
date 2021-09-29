@@ -509,7 +509,7 @@ div[class$="group"]
   height: 30px;
   width: 30px;
   margin-right: 10px;
-  background: no-repeat url('./assets/img/a头像.png') center/30px;
+  background: no-repeat url('../assets/img/a头像.png') center/30px;
   border-radius: 3px;
 }
 .icon-faxian {
