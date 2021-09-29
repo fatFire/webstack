@@ -1,9 +1,18 @@
-import { Page } from "./Page"
+import Page from './Page.js'
+import { friends } from '../data.js'
 
 class ContactPage extends Page {
   componentDidMount() {
-    this.tabChange()
     this.onScroll()
+  }
+
+  compile() {
+    if (this.props.node) {
+      this.props.node.innerHTML(this.props.selector, this.dom)
+    } else {
+      const wrap = document.querySelector("#wrap")
+      wrap.appendChild(this.dom)
+    }
   }
 
   onScroll() {
@@ -14,23 +23,6 @@ class ContactPage extends Page {
       if (e.target.scrollTop == 0) {
         headBorder.style.opacity = 0
       }
-    })
-  }
-
-  tabChange() {
-    const tabItems = document.querySelectorAll(".tab-item")
-    tabItems.forEach((item, index) => {
-      item.addEventListener("click", () => {
-        if (index === 0) {
-          webstack.init(new HomePage())
-        } else if (index === 1) {
-          webstack.init(new ContactPage())
-        } else if (index === 2) {
-          webstack.init(new FindPage())
-        } else {
-          webstack.init(new MyPage())
-        }
-      })
     })
   }
 
@@ -117,30 +109,9 @@ class ContactPage extends Page {
           <div>D</div>
         </div>
       </div>
-      
-      <div class="tab">
-        <div class="tab-item">
-          <span class="iconfont icon-pinglun"></span>
-          <div>微信</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user-group"></span>
-          <div>通讯录</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-faxian1">
-            <i class="iconfont icon-yuandian"></i>
-          </span>
-          <div>发现</div>
-        </div>
-        <div class="tab-item">
-          <span class="iconfont icon-user"></span>
-          <div>我</div>
-        </div>
-      </div>
     </div>
     `
   }
 }
 
-export { ContactPage }
+export default ContactPage

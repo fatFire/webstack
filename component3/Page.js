@@ -13,8 +13,16 @@ class Page {
 
   compile() {}
 
+  recompile() {}
+
   setState(state) {
     this.state = state
+    this.recompile()
+  }
+
+  innerHTML(selector, dom, pos = "afterbegin") {
+    const wrap = this.dom.querySelector(selector) || this.dom
+    wrap.insertAdjacentElement(pos, dom)
   }
 
   componentUnmount() {
@@ -28,3 +36,5 @@ class Page {
       .firstElementChild
   }
 }
+
+export default Page

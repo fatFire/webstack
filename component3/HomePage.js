@@ -1,10 +1,12 @@
+import Page from './Page.js'
+import Title from './Title.js'
+
 class HomePage extends Page {
   constructor(props) {
     super(props)
   }
   componentDidMount() {
     this.go()
-    // this.tabChange()
   }
   compile() {
     if (this.props.node) {
@@ -22,15 +24,11 @@ class HomePage extends Page {
       wrap.appendChild(this.dom)
     }
   }
-  innerHTML(selector, dom, pos = "afterbegin") {
-    const wrap = this.dom.querySelector(selector) || this.dom
-    wrap.insertAdjacentElement(pos, dom)
-  }
 
   go() {
     const go = document.querySelector(".homepagego")
     go.addEventListener("click", () => {
-      router.go("/chat", { title: "胖火花", message: ["hello world"] })
+      this.props.router.go("/chat", { title: "胖火花", message: ["hello world"] })
     })
   }
 
@@ -58,3 +56,5 @@ class HomePage extends Page {
       `
   }
 }
+
+export default HomePage
