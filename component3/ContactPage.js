@@ -65,7 +65,7 @@ class ContactPage extends Page {
     return `
     <div class="contact">
       <div class="contact-head ">
-        通讯录
+        ${this.props.title}
         <span class="iconfont icon-user-plus"></span>
         <div class="contact-head-border"></div>
       </div>

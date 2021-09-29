@@ -20,9 +20,15 @@ const routes = {
   },
   "/contact": {
     component: ContactPage,
+    props: {
+      title: "通讯录",
+    },
   },
   "/find": {
     component: FindPage,
+    props: {
+      title: "发现",
+    },
   },
   "/my": {
     component: MyPage,

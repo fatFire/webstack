@@ -13,7 +13,7 @@ class FindPage extends Page {
   render() {
     return `
     <div class="find">
-      <div class="find-head">发现</div>
+      <div class="find-head">${this.props.title}</div>
       <div class="find-content">
         <div class="find-list-item">
           <img class="friends-icon" src="./assets/img/朋友圈.png" alt="">
