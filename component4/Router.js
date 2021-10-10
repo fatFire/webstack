@@ -40,6 +40,7 @@ class Router {
   }
 
   go(url, props) {
+    console.log(url)
     this.count++
     window.history.pushState(
       {
