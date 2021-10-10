@@ -38,6 +38,7 @@ class Router {
 
   go(url, props) {
     this.count++
+    console.log(this.nowURL)
     if (this.nowURL.endsWith('/')) {
       this.nowURL = `${this.nowURL}${url}`
     } else {
