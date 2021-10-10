@@ -52,6 +52,7 @@ class Router {
       this.nowURL = `${this.nowURL}/${url}`
     }
     if (initGo) {
+      console.log(1)
       window.history.replaceState(
         {
           count: this.count,
