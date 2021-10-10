@@ -7,7 +7,7 @@ import MyPage from "./MyPage.js"
 
 
 const routes = {
-  baseURL: 'http://127.0.0.1:5555/',
+  baseURL: 'https://fatfire.github.io/webstack/',
   "home": {
     component: HomePage,
     props: {
