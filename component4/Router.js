@@ -4,7 +4,7 @@ class Router {
     this.stack = []
     this.wrap = wrap
     this.routes = routes
-    this.nowURL = (new URL(this.routes.baseURL)).pathname
+    this.nowURL = new URL(this.routes.baseURL).pathname
     this.eventEmitter = eventEmitter
     this.eventEmitter.on("go", this.handleGoEvent.bind(this))
     this.eventEmitter.on("back", this.handleBackEvent.bind(this))
@@ -42,37 +42,20 @@ class Router {
 
   go(url, props) {
     this.count++
-    let initGo = false
-    if (this.nowURL == (new URL(this.routes.baseURL)).pathname) {
-        initGo = true
-    }
-    if (this.nowURL.endsWith('/')) {
+    if (this.nowURL.endsWith("/")) {
       this.nowURL = `${this.nowURL}${url}`
     } else {
       this.nowURL = `${this.nowURL}/${url}`
     }
-    if (initGo) {
-      console.log(1)
-      window.history.replaceState(
-        {
-          count: this.count,
-          props,
-          url
-        },
-        null,
-        this.nowURL
-      )
-    } else {
-      window.history.pushState(
-        {
-          count: this.count,
-          props,
-          url
-        },
-        null,
-        this.nowURL
-      )
-    }
+    window.history.pushState(
+      {
+        count: this.count,
+        props,
+        url,
+      },
+      null,
+      this.nowURL
+    )
   }
 
   handleGoEvent(url, props) {
