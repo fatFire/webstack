@@ -40,10 +40,9 @@ class Router {
     this.count++
     console.log(this.nowURL)
     if (this.nowURL.endsWith('/')) {
-      this.nowURL = `${this.nowURL}${url}`
-    } else {
-      this.nowURL = `${this.nowURL}/${url}`
+      this.nowURL = this.nowURL.slice(0, -1)
     }
+    this.nowURL = this.nowURL + url
     window.history.pushState(
       {
         count: this.count,
