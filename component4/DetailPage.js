@@ -23,7 +23,7 @@ class DetailPage extends Page {
           node: this
         }).render()}
         <div class="introduction">
-          <img src="./assets/avatar.jpg">
+          <img src="/assets/avatar.jpg">
           <div class="introduction-self">
             <span style="font-size: 18px; color: black" class="iconfont icon-touxiang-nan">胖火花</span>
             <span>微信号：wechat</span>

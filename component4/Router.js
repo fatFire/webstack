@@ -38,13 +38,16 @@ class Router {
 
   go(url, props) {
     this.count++
-    console.log(this.nowURL)
-    this.nowURL = `${this.nowURL}${url}/`
+    if (this.nowURL.endsWith('/')) {
+      this.nowURL = `${this.nowURL}${url}`
+    } else {
+      this.nowURL = `${this.nowURL}/${url}`
+    }
     window.history.pushState(
       {
         count: this.count,
         props,
-        url: this.nowURL,
+        url
       },
       null,
       this.nowURL
