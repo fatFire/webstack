@@ -37,7 +37,7 @@ class Router {
 
   go(url, props) {
     this.count++
-    url += document.location.pathname
+    url = document.location.pathname + url
     window.history.pushState(
       {
         count: this.count,
