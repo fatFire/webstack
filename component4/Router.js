@@ -12,6 +12,10 @@ class Router {
       "pushState",
       this.eventEmitter
     )
+    window.history.replaceState = this._listenHistory(
+      "replaceState",
+      this.eventEmitter
+    )
     this._listenPopState()
   }
 
@@ -38,20 +42,36 @@ class Router {
 
   go(url, props) {
     this.count++
+    let initGo = false
+    if (this.nowURL == (new URL(this.routes.baseURL)).pathname) {
+        initGo = true
+    }
     if (this.nowURL.endsWith('/')) {
       this.nowURL = `${this.nowURL}${url}`
     } else {
       this.nowURL = `${this.nowURL}/${url}`
     }
-    window.history.pushState(
-      {
-        count: this.count,
-        props,
-        url
-      },
-      null,
-      this.nowURL
-    )
+    if (initGo) {
+      window.history.replaceState(
+        {
+          count: this.count,
+          props,
+          url
+        },
+        null,
+        this.nowURL
+      )
+    } else {
+      window.history.pushState(
+        {
+          count: this.count,
+          props,
+          url
+        },
+        null,
+        this.nowURL
+      )
+    }
   }
 
   handleGoEvent(url, props) {
