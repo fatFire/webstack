@@ -1,10 +1,9 @@
-import routes from "./Routes.js"
-
 class Router {
-  constructor({ eventEmitter, wrap }) {
-    this.wrap = wrap
+  constructor({ routes, eventEmitter, wrap }) {
     this.count = 0
     this.stack = []
+    this.wrap = wrap
+    this.routes = routes
     this.eventEmitter = eventEmitter
     this.eventEmitter.on("go", this.handleGoEvent.bind(this))
     this.eventEmitter.on("back", this.handleBackEvent.bind(this))
@@ -26,9 +25,6 @@ class Router {
 
   _listenPopState() {
     window.addEventListener("popstate", (e) => {
-      if (this.count == 1) {
-        e.preventDefault()
-      }
       if (e.state.count < this.count) {
         this.count = e.state.count
         this.eventEmitter.emit("back")
@@ -40,8 +36,8 @@ class Router {
   }
 
   go(url, props) {
-    console.log(url)
     this.count++
+    url += document.location.pathname
     window.history.pushState(
       {
         count: this.count,
@@ -56,9 +52,9 @@ class Router {
   handleGoEvent(url, props) {
     const curPageDom =
       this.stack.length > 0 ? this.stack[this.stack.length - 1].dom : undefined
-    const Page = routes[url].component
+    const Page = this.routes[url].component
     const pageInstance = new Page({
-      ...routes[url].props,
+      ...this.routes[url].props,
       ...props,
       router: this,
       parentSelector: this.wrap,
