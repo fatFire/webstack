@@ -3,4 +3,4 @@ import routes from "./Routes.js"
 
 
 const router = new Router({ routes, eventEmitter: new EventEmitter(), wrap: '#wrap'})
-router.go("/home")
+router.go("home")

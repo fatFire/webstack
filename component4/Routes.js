@@ -7,32 +7,32 @@ import MyPage from "./MyPage.js"
 
 
 const routes = {
-  baseURL: 'https://fatfire.github.io/webstack',
-  "/home": {
+  baseURL: 'https://fatfire.github.io/webstack/',
+  "home": {
     component: HomePage,
     props: {
       title: "微信",
     },
   },
-  "/chat": {
+  "chat": {
     component: ChatPage,
   },
-  "/detail": {
+  "detail": {
     component: DetailPage,
   },
-  "/contact": {
+  "contact": {
     component: ContactPage,
     props: {
       title: "通讯录",
     },
   },
-  "/find": {
+  "find": {
     component: FindPage,
     props: {
       title: "发现",
     },
   },
-  "/my": {
+  "my": {
     component: MyPage,
   },
 }
