@@ -29,8 +29,7 @@ class Page {
       this.props.node.childEvents = this.props.node.childEvents || []
       this.props.node.childEvents.push(...events)
     } else {
-      console.log([...events, ...this.childEvents])
-      ;[...events, ...this.childEvents].forEach((event) => event())
+      [...events, ...this.childEvents].forEach((event) => event())
     }
   }
 

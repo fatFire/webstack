@@ -56,7 +56,6 @@ class Router {
   handleGoEvent(url, props) {
     const curPageDom =
       this.stack.length > 0 ? this.stack[this.stack.length - 1].dom : undefined
-    console.log(url)
     const Page = routes[url].component
     const pageInstance = new Page({
       ...routes[url].props,

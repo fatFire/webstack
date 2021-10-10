@@ -16,16 +16,12 @@ class TabPage extends Page {
     this.activeTab = this.tabItems[0]
     this.tabItems.forEach((item, index) => {
       item.addEventListener("click", () => {
-        console.log(this.displayPage.classList)
-        console.log(this.activeTab)
         this.displayPage.classList.replace("display", "hide")
         this.activeTab.classList.toggle("active")
         this.tabItems[index].classList.toggle("active")
         this.tabPageMap[index].classList.replace("hide", "display")
         this.displayPage = this.tabPageMap[index]
         this.activeTab = this.tabItems[index]
-        console.log(this.displayPage.classList)
-        console.log(this.activeTab)
       })
     })
   }
