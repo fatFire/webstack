@@ -25,7 +25,7 @@ class Page {
     wrap.insertAdjacentElement(pos, dom)
   }
 
-  componentUnmount() {
+  destoryPage() {
     const wrap = document.querySelector("#wrap")
     wrap.removeChild(this.dom)
   }
