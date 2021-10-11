@@ -1,11 +1,11 @@
 class Router {
-  constructor({ routes, eventEmitter, wrap }) {
+  constructor({ routes, wrap }) {
     this.count = 0
     this.stack = []
     this.wrap = wrap
     this.routes = routes
     this.nowURL = new URL(this.routes.baseURL).pathname
-    this.eventEmitter = eventEmitter
+    this.eventEmitter = new EventEmitter()
     this.eventEmitter.on("go", this.handleGoEvent.bind(this))
     this.eventEmitter.on("back", this.handleBackEvent.bind(this))
     window.history.pushState = this._listenHistory(
